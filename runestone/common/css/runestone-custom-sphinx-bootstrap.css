@@ -754,3 +754,8 @@ border-color: #000000;
 #weekly-graded-assignment h2 {
     max-width: 90%;
 }
+
+#bonus-missions h2::before,
+#bonus-mission h2::before {
+	content: '🚀 ';
+}
