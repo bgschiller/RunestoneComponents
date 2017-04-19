@@ -55,18 +55,12 @@ function addNavigationAndCompletionButtons() {
             $(this).removeClass("buttonAskCompletion")
                 .addClass("buttonConfirmCompletion")
                 .html("<i class='glyphicon glyphicon-ok'></i> Completed. Well Done!");
-            $("#navLinkBgRight").animate({"right": navLinkBgRightFullOpen});
-            $("#relations-next").animate({"right": relationsNextIconNewPosition});
-            navLinkBgRightHalfOpen = 0;
             completionFlag = 1;
         }
         else if ($(this).hasClass("buttonConfirmCompletion")) {
             $(this).removeClass("buttonConfirmCompletion")
                 .addClass("buttonAskCompletion")
                 .html("Mark as completed");
-            navLinkBgRightHalfOpen = navLinkBgRightHiddenPosition + 70;
-            $("#navLinkBgRight").animate({"right": navLinkBgRightHalfOpen});
-            $("#relations-next").animate({"right": relationsNextIconInitialPosition});
             completionFlag = 0;
         }
         processPageState(completionFlag);
