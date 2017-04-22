@@ -588,8 +588,7 @@ div.flash {
 }
 
 #completionButton{
-	margin-top: 25px;
-	margin-bottom: 15px;
+	margin: 25px 0;
 	padding-left: 70px;
 	padding-right: 70px;
 	color: #fff;
