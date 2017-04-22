@@ -125,7 +125,8 @@ def purge_activecodes(app, env, docname):
 
 class ActiveCode(RunestoneDirective):
     """
-.. activecode:: uniqueid   'nocanvas': directives.flag,
+.. activecode:: uniqueid
+   :nocanvas: do not create a canvas
    :nopre: do not create an output component
    :above: put the canvas above the code
    :autorun: run this activecode as soon as the page is loaded
@@ -238,7 +239,7 @@ class ActiveCode(RunestoneDirective):
         else:
             lst = self.options['include'].split(',')
             lst = [x.strip() for x in lst]
-            self.options['include'] = 'data-include=' + " ".join(lst)
+            self.options['include'] = 'data-include="' + " ".join(lst) + '"'
 
         if 'hidecode' in self.options:
             self.options['hidecode'] = 'data-hidecode="true"'

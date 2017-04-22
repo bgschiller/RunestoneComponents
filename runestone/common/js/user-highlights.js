@@ -122,6 +122,7 @@ function decorateTableOfContents() {
 }
 
 function enableUserHighlights() {
+    var err;
     //check if it's not the contents or index page.
     if ((window.location.href).match(/(index.html|genindex.html|navhelp.html|toc.html|assignments.html)/) == null) {
         //checksum generator for each div.section and paragraph. Add that checksum as a class _[checksumValue]
@@ -138,6 +139,18 @@ function enableUserHighlights() {
         getCompletions();   //todo: use document.ready to call
         showLastPositionBanner();  //todo: use document.ready to call
 
+        //Add the highlights on the page
+        try {
+            restoreSelection();  //todo: use document.ready to call
+        }
+        catch (err) {
+            console.log("Failed to restore user highlights: " + err)
+        }
+
+        //Add a container for highlights in the sidebar and populate
+        $(".sphinxsidebarwrapper").append('<div id="highlightbox"><h3>My Highlights</h3><ul></ul></div>');
+        updateHighlightBox();
+
         addNavigationAndCompletionButtons();   //todo: use document.ready to call
 
     }
@@ -148,8 +161,6 @@ function enableUserHighlights() {
     decorateTableOfContents();  //todo: use document.ready to call
 }
 
-// LCMOD - disable highlighting
-// LCMOD 2 - I reinstated this line because apparently it is necessary for the Mark as Completed button
 $(document).bind("runestone:login",enableUserHighlights);
 
 function findHighlightClass(classList) {

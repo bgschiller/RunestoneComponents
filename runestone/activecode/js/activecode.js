@@ -220,7 +220,7 @@ ActiveCode.prototype.createControls = function () {
         $(butt).css("margin-left", "10px");
         this.atButton = butt;
         ctrlDiv.appendChild(butt);
-        $(butt).click((function() {new AudioTour(this.divid, this.editor.getValue(), 1, $(this.origElem).data("audio"))}).bind(this));
+        $(butt).click((function() {new AudioTour(this.divid, this.code, 1, $(this.origElem).data("audio"))}).bind(this));
     }
 
     // LCMOD
@@ -840,6 +840,7 @@ ActiveCode.prototype.runProg = function () {
             this.logRunEvent({
                 'div_id': this.divid,
                 'code': this.editor.getValue(),
+                'lang': this.language,
                 'errinfo': 'success',
                 'to_save': saveCode,
                 'prefix': this.pretext,
@@ -854,6 +855,7 @@ ActiveCode.prototype.runProg = function () {
                 self.logRunEvent({
                     'div_id': self.divid,
                     'code': self.editor.getValue(),
+                    'lang': this.langauge,
                     'errinfo': err.toString(),
                     'to_save': saveCode,
                     'prefix': self.pretext,
