@@ -16,10 +16,6 @@
 	padding-top:20px;
 	display: none;
 }
-#continue-reading a{
-	float:right;
-	margin-right:20px;
-}
 li.completed
 {
 list-style-image: url('completed.png');

@@ -15,7 +15,7 @@ function getCompletions() {
         currentPathname = currentPathname.substring(0, currentPathname.lastIndexOf("?"));
     }
     var data = {lastPageUrl: currentPathname};
-    jQuery.ajax({url: eBookConfig.ajaxURL + 'getCompletionStatus', data: data, async: false}).done(function (data) {
+    jQuery.ajax({url: eBookConfig.ajaxURL + 'getCompletionStatus', data: data}).done(function (data) {
         if (data != "None") {
             var completionData = $.parseJSON(data);
             var completionClass, completionMsg;
@@ -67,9 +67,7 @@ function addNavigationAndCompletionButtons() {
     });
 
     $(window).on('beforeunload', function (e) {
-        if (completionFlag == 0) {
-            processPageState(completionFlag);
-        }
+        processPageState(completionFlag);
     });
 
 }
@@ -113,7 +111,7 @@ function decorateTableOfContents() {
             if (data != "None") {
                 lastPageData = $.parseJSON(data);
                 if (lastPageData[0].lastPageChapter != null) {
-                    $("#continue-reading").show().html('<div id="jump-to-chapter" class="alert alert-info" ><strong>You were Last Reading:</strong> ' + lastPageData[0].lastPageChapter + ((lastPageData[0].lastPageSubchapter) ? ' &gt; ' + lastPageData[0].lastPageSubchapter : "") + ' <a href="' + lastPageData[0].lastPageUrl + '?lastPosition=' + lastPageData[0].lastPageScrollLocation + '">Continue Reading</a></div>');
+                    $("#continue-reading").html('<div id="jump-to-chapter" class="alert alert-info" >' + ' <a class="alert-link" href="' + lastPageData[0].lastPageUrl + '?lastPosition=' + lastPageData[0].lastPageScrollLocation + '">Continue Reading</a> ' + lastPageData[0].lastPageChapter + ((lastPageData[0].lastPageSubchapter) ? ' &gt; ' + lastPageData[0].lastPageSubchapter : "") + '</div>').show();
                 }
             }
         });
