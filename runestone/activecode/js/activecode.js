@@ -81,9 +81,11 @@ ActiveCode.prototype.createEditor = function (index) {
     this.containerDiv = document.createElement('div');
     var linkdiv = document.createElement('div');
     linkdiv.id = this.divid.replace(/_/g,'-').toLowerCase();  // :ref: changes _ to - so add this as a target
-    $(this.containerDiv).addClass("ac_section alert alert-warning");
+    $(this.containerDiv).addClass("ac_section");
     var codeDiv = document.createElement("div");
-    $(codeDiv).addClass("ac_code_div");
+    // LCMOD
+    // add this ac_editor_container class so we can apply styles
+    $(codeDiv).addClass("ac_code_div ac_editor_container");
     this.codeDiv = codeDiv;
     this.containerDiv.id = this.divid;
     this.containerDiv.lang = this.language;
@@ -101,12 +103,16 @@ ActiveCode.prototype.createEditor = function (index) {
     });
 
     // Make the editor resizable
+    /*
+    LC MOD
+    The resizable UI is janky and we don't need it
     $(editor.getWrapperElement()).resizable({
         resize: function() {
             editor.setSize($(this).width(), $(this).height());
             editor.refresh();
         }
     });
+    */
 
     // give the user a visual cue that they have changed but not saved
     editor.on('change', (function () {
@@ -120,7 +126,11 @@ ActiveCode.prototype.createEditor = function (index) {
 
     this.editor = editor;
     if (this.hidecode) {
-        $(this.codeDiv).css("display","none");
+        // lc mod
+        // instead of toggling visiblity of codeDiv,
+        // we toggle visiblity of its child, .CodeMirror
+        // (because we dont want the ctrl buttons to disappear)
+        $(this.codeDiv).find(".CodeMirror").css("display","none");
     }
 };
 
@@ -168,27 +178,21 @@ ActiveCode.prototype.createControls = function () {
         this.showHideButt = butt;
         ctrlDiv.appendChild(butt);
         $(butt).click( (function() {
-            $(this.codeDiv).toggle();
-            if (this.historyScrubber == null) {
-                this.addHistoryScrubber(true);
-            } else {
-                $(this.historyScrubber.parentElement).toggle();
-            }
-            if ($(this.showHideButt).text() == "Show Code") {
-                $(this.showHideButt).text("Hide Code");
-            } else {
-                $(this.showHideButt).text("Show Code");
-            }
-            if ($(this.runButton).attr('disabled')) {
-                $(this.runButton).removeAttr('disabled');
-            } else {
-                $(this.runButton).attr('disabled', 'disabled');
-            }
+            // LCMOD
+            // instead of toggling visiblity of codeDiv,
+            // we toggle visiblity of its child, .CodeMirror
+            // (because we dont want the ctrl buttons to disappear)
+            $(this.codeDiv).find(".CodeMirror").toggle();
+            $(this.loadButton).toggle();
+            $(this.saveButton).toggle();
         }).bind(this));
     }
 
     // CodeLens
-    if ($(this.origElem).data("codelens") && ! this.graderactive) {
+    if ( /* $(this.origElem).data("codelens")  && ! this.graderactive */ true) {
+        // LCMOD (line above)
+        // always include codelens
+        
         butt = document.createElement("button");
         $(butt).addClass("ac_opt btn btn-default");
         $(butt).text("Show CodeLens");
@@ -219,9 +223,10 @@ ActiveCode.prototype.createControls = function () {
         $(butt).click((function() {new AudioTour(this.divid, this.editor.getValue(), 1, $(this.origElem).data("audio"))}).bind(this));
     }
 
-
-    $(this.outerDiv).prepend(ctrlDiv);
-    this.controlDiv = ctrlDiv;
+    // LCMOD
+    // the control button go inside the container for the code
+    // rather than outside above it
+    $(this.codeDiv).prepend(ctrlDiv);
 
 };
 
@@ -319,8 +324,11 @@ ActiveCode.prototype.createOutput = function () {
     outDiv.appendChild(this.output);
     outDiv.appendChild(this.graphics);
 
-    var outputLabel = $("<h5>Output</h5>");
-    $(this.outerDiv).append(outputLabel);
+    // lc mod
+    // Instead of a header outside (above) the ac_output div,
+    // we use a div inside the ac_output div
+    var outputLabel = $("<div class='ac_output_label'>Output</div>");
+    $(outDiv).prepend(outputLabel);
     this.outerDiv.appendChild(outDiv);
 
     var clearDiv = document.createElement("div");
@@ -391,8 +399,10 @@ ActiveCode.prototype.saveEditor = function () {
                     save_btn.tooltip('destroy')
                 }, 4000);
 
-                $('#' + acid + ' .CodeMirror').css('border-top', '2px solid #aaa');
-                $('#' + acid + ' .CodeMirror').css('border-bottom', '2px solid #aaa');
+                // lc mod
+                // we want the border to simply disappear after saving
+                $('#' + acid + ' .CodeMirror').css('border-top', '0');
+                $('#' + acid + ' .CodeMirror').css('border-bottom', '0');
             }
         }
     }.bind(this);
@@ -1808,6 +1818,10 @@ ACFactory.toggleScratchActivecode = function () {
 };
 
 $(document).ready(function() {
+
+    // LC MOD
+    $(this.origElem).data("codelens");
+
     ACFactory.createScratchActivecode();
     $('[data-component=activecode]').each( function(index ) {
         if ($(this.parentNode).data("component") !== "timedAssessment" && $(this.parentNode.parentNode).data("component") !== "timedAssessment") {   // If this element exists within a timed component, don't render it here

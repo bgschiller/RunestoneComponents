@@ -38,6 +38,10 @@ nosetests.xml
 .pydevproject
 .idea
 bower_componenets/
-.venv
 
+.venv
 runestone/build_info
+test/
+
+# local shared-styles repo, for local dev
+runestone/common/css/shared-custom-styles/

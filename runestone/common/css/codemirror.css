@@ -3,10 +3,8 @@
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  border-right: 2px solid #aaa;
-  border-top: 2px solid #aaa;
-  border-bottom: 2px solid #aaa;
-  border-left: 2px solid #aaa;
+  /*border: 2px solid #ccc;*/
+  /*border-radius: 2px;*/
 
   /*height: 300px;*/
 }
@@ -18,7 +16,7 @@
 /* PADDING */
 
 .CodeMirror-lines {
-  padding: 4px 0; /* Vertical padding around content */
+  padding: 1em 0; /* Vertical padding around content */
 }
 .CodeMirror pre {
   padding: 0 4px; /* Horizontal padding of content */
@@ -166,6 +164,10 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
   border-right: 30px solid transparent;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
+
+  /* LC MOD*/
+  /* decrease font-size on active code so that people dont have to expand it */
+  font-size: 0.8em
 }
 
 /* The fake, visible scrollbars. Used to force redraw during scrolling

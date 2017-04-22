@@ -41,45 +41,8 @@ function showLastPositionBanner() {
 }
 
 function addNavigationAndCompletionButtons() {
-    var navLinkBgRightHiddenPosition = -$("#navLinkBgRight").outerWidth() - 5;
-    var navLinkBgRightHalfOpen;
-    var navLinkBgRightFullOpen = 0;
 
-    if ($("#completionButton").hasClass("buttonAskCompletion")) {
-        navLinkBgRightHalfOpen = navLinkBgRightHiddenPosition + 70;
-    }
-    else if ($("#completionButton").hasClass("buttonConfirmCompletion")) {
-        navLinkBgRightHalfOpen = 0;
-    }
-    var relationsNextIconInitialPosition = $("#relations-next").css("right");
-    var relationsNextIconNewPosition = -(navLinkBgRightHiddenPosition + 35);
-
-    $("#navLinkBgRight").css("right", navLinkBgRightHiddenPosition).show();
-    var navBgShown = false;
-    $(window).scroll(function () {
-        if ($(window).scrollTop() + $(window).height() == $(document).height()) {
-            $("#navLinkBgRight").animate(
-                {"right": navLinkBgRightHalfOpen}, 200
-            );
-            $("#navLinkBgLeft").animate(
-                {"left": "0px"}, 200
-            );
-            if ($("#completionButton").hasClass("buttonConfirmCompletion")) {
-                $("#relations-next").animate({"right": relationsNextIconNewPosition}, 200);
-            }
-            navBgShown = true;
-        }
-        else if (navBgShown) {
-            $("#navLinkBgRight").animate(
-                {"right": navLinkBgRightHiddenPosition}, 200
-            );
-            $("#navLinkBgLeft").animate(
-                {"left": "-65px"}, 200
-            );
-            $("#relations-next").animate({"right": relationsNextIconInitialPosition});
-            navBgShown = false;
-        }
-    });
+    // LCMOD - remove code to update next/prev nav button locations
 
     var completionFlag = 0;
     if ($("#completionButton").hasClass("buttonAskCompletion")) {
@@ -92,18 +55,12 @@ function addNavigationAndCompletionButtons() {
             $(this).removeClass("buttonAskCompletion")
                 .addClass("buttonConfirmCompletion")
                 .html("<i class='glyphicon glyphicon-ok'></i> Completed. Well Done!");
-            $("#navLinkBgRight").animate({"right": navLinkBgRightFullOpen});
-            $("#relations-next").animate({"right": relationsNextIconNewPosition});
-            navLinkBgRightHalfOpen = 0;
             completionFlag = 1;
         }
         else if ($(this).hasClass("buttonConfirmCompletion")) {
             $(this).removeClass("buttonConfirmCompletion")
                 .addClass("buttonAskCompletion")
                 .html("Mark as completed");
-            navLinkBgRightHalfOpen = navLinkBgRightHiddenPosition + 70;
-            $("#navLinkBgRight").animate({"right": navLinkBgRightHalfOpen});
-            $("#relations-next").animate({"right": relationsNextIconInitialPosition});
             completionFlag = 0;
         }
         processPageState(completionFlag);
@@ -181,126 +138,18 @@ function enableUserHighlights() {
         getCompletions();   //todo: use document.ready to call
         showLastPositionBanner();  //todo: use document.ready to call
 
-        //Add the highlights on the page
-        restoreSelection();  //todo: use document.ready to call
-
-        //Add a container for highlights in the sidebar and populate
-        $(".sphinxsidebarwrapper").append('<div id="highlightbox"><h3>My Highlights</h3><ul></ul></div>');
-        updateHighlightBox();
-
         addNavigationAndCompletionButtons();   //todo: use document.ready to call
 
-        $("body").append('<ul class="dropdown-menu" id="highlight-option-box" style="display:none;"><li><a href="javascript:void(0);" id="option-highlight-text" style="display:block;">Highlight</a></li></ul>');
-
-        $('body .section').on("mouseup", function (evt) {
-            sel = rangy.getSelection();
-            if (typeof sel !== "undefined" && sel.anchorNode != null && sel.focusNode != null) {
-                var currAnchorNode = sel.anchorNode.parentElement;
-                var currFocusNode = sel.focusNode.parentElement;
-            }
-            if (typeof sel === "undefined" || (sel.anchorOffset == sel.focusOffset) && sel.anchorNode == sel.focusNode) {
-                $("#highlight-option-box").hide();
-            }
-            else if ($(currAnchorNode).hasClass("my-highlighted-text") && $(currFocusNode).hasClass("my-highlighted-text")) {
-                sel.expand("word"); //expands selection to closest word only if user selects atleast one character
-                highlightAction = "delete";
-                toggleHighlightOptionBox(evt, "Delete Highlight");
-            }
-            else if ($(sel.getRangeAt(0).getNodes([1])).hasClass("my-highlighted-text")) {
-                sel.expand("word");
-                toggleHighlightOptionBox(evt, "Extend Highlight");
-                if ($(sel.getRangeAt(0).startContainer.parentElement).hasClass("my-highlighted-text")) { //extendEnd
-                    var classList = $(sel.getRangeAt(0).startContainer.parentElement).attr('class').split(/\s+/); //get all classes applied to anchor element
-                    extendType = "extendEnd";
-                }
-                else if ($(sel.getRangeAt(0).endContainer.parentElement).hasClass("my-highlighted-text")) { //extendBeginning
-                    var classList = $(sel.getRangeAt(0).endContainer.parentElement).attr('class').split(/\s+/); //get all classes applied to focus element
-                    extendType = "extendBeginning";
-                }
-                else { //extendBoth
-                    var classList = "";
-                    $(sel.getRangeAt(0).getNodes([1])).each(function (index, value) {
-                        if ($(value).hasClass("my-highlighted-text")) {
-                            classList = $(value).attr('class').split(/\s+/);
-                        }
-                    });
-                    extendType = "extendBoth";
-                }
-                extendHighlightClass = findHighlightClass(classList);
-                highlightAction = "extend";
-            }
-            else if (!($(currAnchorNode).hasClass("my-highlighted-text") || $(currFocusNode).hasClass("my-highlighted-text"))) {
-                sel.expand("word");
-                toggleHighlightOptionBox(evt, "Highlight");
-                highlightAction = "save";
-            }
-        });
-
-        $("#option-highlight-text").on('click', function () {
-            $("#highlight-option-box").hide();
-            switch (highlightAction) {
-                case "save":
-                {
-                    var uniqueId = "hl" + saveSelection(sel);
-                    myHighlightApplier = rangy.createCssClassApplier("my-highlighted-text " + uniqueId, {normalize: true});
-                    myHighlightApplier.applyToSelection();
-                    $("." + uniqueId).first().attr("id", uniqueId);
-                    window.getSelection().removeAllRanges();
-                    updateHighlightBox();
-                    break;
-                }
-                case "delete":
-                {
-                    var classList = $($(sel.anchorNode)[0].parentElement).attr('class').split(/\s+/); //get all classes applied to element
-                    var toDeleteHighlightClass = findHighlightClass(classList);
-                    range = rangy.createRange();
-                    myHighlightApplier = rangy.createCssClassApplier("my-highlighted-text", {normalize: true});
-                    $(".hl" + toDeleteHighlightClass).each(function () { //loop over all nodes with the given class and remove the my-highlighted-text class
-                        range.selectNodeContents(this);
-                        myHighlightApplier.undoToRange(range);
-                    });
-                    window.getSelection().removeAllRanges();
-                    toDelete = false;
-                    deleteHighlight(toDeleteHighlightClass);
-                    $(".hl" + toDeleteHighlightClass).attr("id", "");
-                    $(".hl" + toDeleteHighlightClass).removeClass("hl" + toDeleteHighlightClass);
-                    updateHighlightBox();
-                    break;
-                }
-                case "extend":
-                {
-                    var existingHighlight = $(".hl" + extendHighlightClass);
-                    var range = sel.getRangeAt(0);
-                    //expand the selection to include the original highlight based on if it is extendEnd or extendBeginning
-					if (extendType == "extendEnd") {
-						range.setStartBefore(existingHighlight[0]);
-					} else if (extendType == "extendBeginning") {
-						range.setEndAfter(existingHighlight[existingHighlight.length - 1]);
-					}
-                    sel.removeAllRanges(); //remove any existing ranges in selection
-                    sel.addRange(range); //add the new expanded range to selection
-                    //delete old highlight and save the expanded range as a new highlight
-                    $(existingHighlight).removeClass("my-highlighted-text");
-                    $(".hl" + extendHighlightClass).attr("id", "");
-                    $(".hl" + extendHighlightClass).removeClass("hl" + extendHighlightClass);
-                    deleteHighlight(extendHighlightClass);
-                    var newExtendHighlightClass = saveSelection(sel);
-                    myHighlightApplier = rangy.createCssClassApplier("my-highlighted-text " + "hl" + newExtendHighlightClass, {normalize: true});
-                    myHighlightApplier.applyToSelection();
-                    $(".hl" + newExtendHighlightClass).first().attr("id", "hl" + newExtendHighlightClass);
-                    window.getSelection().removeAllRanges();
-                    updateHighlightBox();
-                    break;
-                }
-            }
-        });
     }
+
     // If this **is** the toc then we want to add a link to last known position.
     // As well as add either an orange in progress bullet or a checkmark on
     // in-progress or completed sections.
     decorateTableOfContents();  //todo: use document.ready to call
 }
-// call enable user highlights after login
+
+// LCMOD - disable highlighting
+// LCMOD 2 - I reinstated this line because apparently it is necessary for the Mark as Completed button
 $(document).bind("runestone:login",enableUserHighlights);
 
 function findHighlightClass(classList) {

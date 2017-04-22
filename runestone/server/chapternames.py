@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, Table, MetaData, select, delete
 from collections import OrderedDict
 import sys
 from functools import reduce
-
+from . import db
 
 def findFullTitle(ftext, start):
     found = False
@@ -87,17 +87,8 @@ def getTOCEntries(ftext):
 
 
 def addChapterInfoToDB(subChapD, chapTitles, course_id):
-    dbname = 'runestone'
-    uname = os.environ['USER']
-    if uname == 'bnmnetp':
-        uname = 'bnmnetp_courselib'
-        dbname = 'bnmnetp_courselib'
 
-    dburl = 'postgresql://{}@localhost/{}'.format(uname,dbname)
-
-
-    if all(name in os.environ for name in ['DBHOST', 'DBPASS', 'DBUSER', 'DBNAME']):
-        dburl = 'postgresql://{DBUSER}:{DBPASS}@{DBHOST}/{DBNAME}'.format(**os.environ)
+    dburl = db.url
 
     engine = create_engine(dburl)
     meta = MetaData()
