@@ -36,7 +36,6 @@ def setup(app):
     app.add_directive('timed', TimedDirective)
 
     app.add_stylesheet('fitb.css')
-    #app.add_javascript('assess.js')
     app.add_javascript('mchoice.js')
     app.add_javascript('timedmc.js')
     app.add_javascript('fitb.js')
@@ -47,8 +46,6 @@ def setup(app):
     app.add_node(MChoiceNode, html=(visit_mc_node, depart_mc_node))
     app.add_node(FITBNode, html=(visit_fitb_node, depart_fitb_node))
     app.add_node(BlankNode, html=(visit_blank_node, depart_blank_node))
-
-
 
 
 class AddButton(Directive):

@@ -76,13 +76,10 @@ class Assessment(Directive):
     def run(self):
 
         self.options['qnumber'] = self.getNumber()
-        
+
         self.options['divid'] = self.arguments[0]
 
-        if self.content[0][:2] == '..':  # first line is a directive
-            self.content[0] = self.options['qnumber'] + ': \n\n' + self.content[0]
-        else:
-            self.content[0] = self.options['qnumber'] + ': ' + self.content[0]
+        # LCMOD - remove question numbering
 
         if self.content:
             if 'iscode' in self.options:
@@ -91,5 +88,3 @@ class Assessment(Directive):
                 self.options['bodytext'] = "\n".join(self.content)
         else:
             self.options['bodytext'] = '\n'
-
-
