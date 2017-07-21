@@ -15,7 +15,7 @@ function getCompletions() {
         currentPathname = currentPathname.substring(0, currentPathname.lastIndexOf("?"));
     }
     var data = {lastPageUrl: currentPathname};
-    jQuery.ajax({url: eBookConfig.ajaxURL + 'getCompletionStatus', data: data}).done(function (data) {
+    jQuery.ajax({url: eBookConfig.ajaxURL + 'getCompletionStatus', data: data, async: false}).done(function (data) {
         if (data != "None") {
             var completionData = $.parseJSON(data);
             var completionClass, completionMsg;
@@ -51,6 +51,7 @@ function addNavigationAndCompletionButtons() {
         completionFlag = 1;
     }
     $("#completionButton").on("click", function () {
+        console.log('completion button clicked')
         if ($(this).hasClass("buttonAskCompletion")) {
             $(this).removeClass("buttonAskCompletion")
                 .addClass("buttonConfirmCompletion")
@@ -67,7 +68,9 @@ function addNavigationAndCompletionButtons() {
     });
 
     $(window).on('beforeunload', function (e) {
+      if(completionFlag == 0) {
         processPageState(completionFlag);
+      }
     });
 
 }
@@ -136,7 +139,7 @@ function enableUserHighlights() {
         getCompletions();   //todo: use document.ready to call
         showLastPositionBanner();  //todo: use document.ready to call
 
-        addNavigationAndCompletionButtons();   //todo: use document.ready to call
+        addNavigationAndCompletionButtons(); //todo: use document.ready to call
 
     }
 
