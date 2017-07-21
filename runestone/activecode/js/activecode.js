@@ -187,10 +187,8 @@ ActiveCode.prototype.createControls = function () {
     }
 
     // CodeLens
-    if ( /* $(this.origElem).data("codelens") */ true) {
-        // LC MOD (line above)
-        // always include codelens
-        
+    if ($(this.origElem).data("codelens")) {
+
         butt = document.createElement("button");
         $(butt).addClass("ac_opt btn btn-default");
         $(butt).text("Show CodeLens");
@@ -1618,7 +1616,7 @@ ACFactory.toggleScratchActivecode = function () {
 $(document).ready(function() {
 
     // LC MOD
-    $(this.origElem).data("codelens");
+    //$(this.origElem).data("codelens");
 
     ACFactory.createScratchActivecode();
     $('[data-component=activecode]').each( function(index ) {
