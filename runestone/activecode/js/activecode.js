@@ -223,7 +223,7 @@ ActiveCode.prototype.createControls = function () {
     // lc mod
     // the control button go inside the container for the code
     // rather than outside above it
-    $(this.codeDiv).prepend(ctrlDiv);
+    $(this.codeDiv).append(ctrlDiv);
 
 };
 
