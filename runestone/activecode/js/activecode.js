@@ -100,15 +100,18 @@ ActiveCode.prototype.createEditor = function (index) {
     });
     */
 
-    // give the user a visual cue that they have changed but not saved
-    editor.on('change', (function () {
-        if (editor.acEditEvent == false || editor.acEditEvent === undefined) {
-            $(editor.getWrapperElement()).css('border-top', '2px solid #b43232');
-            $(editor.getWrapperElement()).css('border-bottom', '2px solid #b43232');
-            this.logBookEvent({'event': 'activecode', 'act': 'edit', 'div_id': this.divid});
+    if (this.useRunestoneServices) {
+      // give the user a visual cue that they have changed but not saved
+      // but only if it's *possible* to save
+      editor.on('change', (function () {
+          if (useRunestoneServiceseditor.acEditEvent == false || editor.acEditEvent === undefined) {
+              $(editor.getWrapperElement()).css('border-top', '2px solid #b43232');
+              $(editor.getWrapperElement()).css('border-bottom', '2px solid #b43232');
+              this.logBookEvent({'event': 'activecode', 'act': 'edit', 'div_id': this.divid});
+      }
+          editor.acEditEvent = true;
+          }).bind(this));  // use bind to preserve *this* inside the on handler.
     }
-        editor.acEditEvent = true;
-        }).bind(this));  // use bind to preserve *this* inside the on handler.
 
     this.editor = editor;
     if (this.hidecode) {
